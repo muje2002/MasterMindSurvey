@@ -196,16 +196,21 @@ function updateNav() {
   const nextBtn = $('#next-btn');
   prevBtn.style.visibility = currentPart === 0 ? 'hidden' : 'visible';
 
+  // 기존 핸들러 완전 제거 후 새로 연결
+  const newBtn = nextBtn.cloneNode(true);
+  nextBtn.parentNode.replaceChild(newBtn, nextBtn);
+
   if (currentPart === parts.length - 1) {
-    nextBtn.textContent = '제출하기';
-    nextBtn.onclick = handleSubmit;
+    newBtn.textContent = '제출하기';
+    newBtn.addEventListener('click', handleSubmit);
   } else {
-    nextBtn.textContent = '다음';
-    nextBtn.onclick = goNext;
+    newBtn.textContent = '다음';
+    newBtn.addEventListener('click', goNext);
   }
 }
 
 function goNext() {
+  if (currentPart >= parts.length - 1) return;
   if (!validateCurrentPart()) return;
   currentPart++;
   renderPart(currentPart);
@@ -286,13 +291,20 @@ async function handleSubmit() {
   nextBtn.innerHTML = '<span class="btn-spinner"></span>제출 중...';
 
   try {
+    // Google Apps Script는 CORS preflight를 지원하지 않으므로
+    // Content-Type 헤더 없이 전송 (simple request)
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(responses),
+      redirect: 'follow',
     });
 
-    if (!res.ok) throw new Error('Submit failed');
+    // Apps Script는 리다이렉트 후 응답하므로 opaque일 수 있음
+    if (res.type === 'opaque' || res.ok) {
+      // 성공으로 간주
+    } else {
+      throw new Error('Submit failed');
+    }
 
     // 이메일 입력 시 메시지 커스텀
     const emailQ = parts.flatMap((p) => p.questions).find((q) => q.type === 'email');

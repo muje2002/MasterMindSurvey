@@ -331,9 +331,8 @@ async function init() {
     }
   });
 
-  // 네비게이션
+  // 네비게이션 (onclick은 updateNav()에서 동적으로 설정)
   $('#prev-btn').addEventListener('click', goPrev);
-  $('#next-btn').addEventListener('click', goNext);
 
   // 재시도
   $('#retry-btn').addEventListener('click', () => {

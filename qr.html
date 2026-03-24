@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MasterMind Survey — QR Code Generator</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .qr-page {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 40px 24px;
+    }
+    .qr-title { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; }
+    .qr-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+    .qr-input {
+      width: 100%; max-width: 420px; padding: 14px 16px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text-primary);
+      font-size: 15px; font-family: inherit; outline: none; margin-bottom: 16px;
+    }
+    .qr-input:focus { border-color: var(--accent-gold); }
+    .qr-display {
+      margin: 24px 0; padding: 24px; background: #fff; border-radius: var(--radius);
+      display: none;
+    }
+    .qr-display.visible { display: block; }
+    .qr-actions { display: flex; gap: 12px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="qr-page">
+    <div class="logo-mark">M</div>
+    <h1 class="qr-title">QR Code Generator</h1>
+    <p class="qr-subtitle">설문 URL을 QR 코드로 변환합니다</p>
+
+    <input type="url" id="url-input" class="qr-input" placeholder="설문 페이지 URL을 입력하세요">
+    <button id="generate-btn" class="btn-primary">QR 코드 생성</button>
+
+    <div id="qr-display" class="qr-display"></div>
+
+    <div class="qr-actions" id="qr-actions" style="display:none">
+      <button id="download-btn" class="btn-primary">PNG 다운로드</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script>
+    const urlInput = document.getElementById('url-input');
+    const generateBtn = document.getElementById('generate-btn');
+    const qrDisplay = document.getElementById('qr-display');
+    const downloadBtn = document.getElementById('download-btn');
+    const qrActions = document.getElementById('qr-actions');
+
+    let lastCanvas = null;
+
+    generateBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (!url) { urlInput.focus(); return; }
+
+      const qr = qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+
+      const size = 300;
+      const cellSize = Math.floor(size / qr.getModuleCount());
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // 흰 배경
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, size, size);
+
+      // QR 모듈
+      ctx.fillStyle = '#0A0A0F';
+      for (let r = 0; r < qr.getModuleCount(); r++) {
+        for (let c = 0; c < qr.getModuleCount(); c++) {
+          if (qr.isDark(r, c)) {
+            ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+
+      qrDisplay.innerHTML = '';
+      qrDisplay.appendChild(canvas);
+      qrDisplay.classList.add('visible');
+      qrActions.style.display = 'flex';
+      lastCanvas = canvas;
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (!lastCanvas) return;
+      const link = document.createElement('a');
+      link.download = 'mastermind-survey-qr.png';
+      link.href = lastCanvas.toDataURL('image/png');
+      link.click();
+    });
+  </script>
+</body>
+</html>

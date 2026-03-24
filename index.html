@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MasterMind Survey</title>
+  <meta name="description" content="리더 전용 프라이빗 AI 비서 MasterMind MVP 검증 설문">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- 인트로 화면 -->
+    <section id="intro-screen" class="screen active">
+      <div class="screen-content">
+        <div class="logo-mark">M</div>
+        <h1 class="intro-title">MasterMind</h1>
+        <p class="intro-subtitle">리더 전용 프라이빗 AI 비서</p>
+        <div class="intro-divider"></div>
+        <p class="intro-desc">MasterMind MVP 검증을 위한 프리미엄 설문조사입니다.<br>소중한 경험과 의견을 나눠주세요.</p>
+        <div class="intro-duration">예상 소요시간: <strong>약 3분</strong></div>
+        <button id="start-btn" class="btn-primary">설문 시작하기</button>
+      </div>
+    </section>
+
+    <!-- 로딩 화면 -->
+    <section id="loading-screen" class="screen">
+      <div class="screen-content">
+        <div class="spinner"></div>
+        <p class="loading-text">설문을 준비하고 있습니다...</p>
+      </div>
+    </section>
+
+    <!-- 설문 화면 -->
+    <section id="survey-screen" class="screen">
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-label" id="progress-label">Part 1 / 4</div>
+      </div>
+      <div class="survey-content" id="survey-content">
+        <!-- 동적으로 렌더링 -->
+      </div>
+      <div class="survey-nav">
+        <button id="prev-btn" class="btn-secondary" style="visibility:hidden">이전</button>
+        <button id="next-btn" class="btn-primary">다음</button>
+      </div>
+    </section>
+
+    <!-- 완료 화면 -->
+    <section id="complete-screen" class="screen">
+      <div class="screen-content">
+        <div class="checkmark">
+          <svg viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="none" stroke="#D4AF37" stroke-width="2"/>
+            <path fill="none" stroke="#D4AF37" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <h2 class="complete-title">소중한 의견에 감사드립니다</h2>
+        <p class="complete-desc" id="complete-message">응답이 성공적으로 기록되었습니다.</p>
+        <div class="logo-mark small">M</div>
+        <p class="complete-brand">MasterMind</p>
+      </div>
+    </section>
+
+    <!-- 에러 화면 -->
+    <section id="error-screen" class="screen">
+      <div class="screen-content">
+        <div class="error-icon">!</div>
+        <h2 class="error-title">설문을 불러올 수 없습니다</h2>
+        <p class="error-desc">네트워크 연결을 확인하고 다시 시도해주세요.</p>
+        <button id="retry-btn" class="btn-primary">다시 시도</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/survey.js"></script>
+</body>
+</html>
